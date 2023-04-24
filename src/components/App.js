@@ -55,32 +55,20 @@ function App() {
 	}
 
 	//выгрузка данных о пользователе с сервера
-	const [userApi, setUserApi] = useState("");
-
 	const [userName, setUserName] = useState("");
 	const [userDescription, setUserDescription] = useState("");
 	const [userAvatar, setUserAvatar] = useState("");
 
-	useEffect(() => {
-		api.getUserInfo(userApi)
-			.then((data) => {
-				setUserName(data.name);
-				setUserDescription(data.about);
-				setUserAvatar(data.avatar);
-			})
-			.catch((error) => {
-				console.log(error.message);
-			});
-	}, []);
-
 	//выгрузка карт с сервера
-	const [cardList, setCardList] = useState([]);
 	const [cards, setCards] = useState([]);
 
 	useEffect(() => {
-		api.getInitialCards(cardList)
-			.then((data) => {
-				setCards(data);
+		Promise.all([api.getUserInfo(), api.getInitialCards()])
+			.then(([data, item]) => {
+				setCards(item);
+				setUserName(data.name);
+				setUserDescription(data.about);
+				setUserAvatar(data.avatar);
 			})
 			.catch((error) => {
 				console.log(error.message);
@@ -104,24 +92,15 @@ function App() {
 				userName={userName}
 				userDescription={userDescription}
 				userAvatar={userAvatar}
+				cards={cards}
+				handleCardClick={handleCardClick}
 			/>
-			<section className="cards">
-				{cards.map((item) => (
-					<Card
-						card={item}
-						key={item._id}
-						src={item.link}
-						title={item.name}
-						likes={item.likes}
-						owner={item.owner}
-						onCardClick={handleCardClick}
-					></Card>
-				))}
-			</section>
+
 			<Footer />
 			<PopupWithForm
 				title="Редактировать профиль"
 				name="profile"
+				nameBtn="Сохранить"
 				isOpen={isEditProfilePopupOpen}
 				onClose={closeAllPopups}
 			>
@@ -151,18 +130,11 @@ function App() {
 				<span className="popup__input-error popupProfileAbout-error">
 					Вы пропустили это поле
 				</span>
-				<button
-					className="popup__button-save popup__button-save_inactive"
-					id="submitEditProfife"
-					type="submit"
-					disabled
-				>
-					Сохранить
-				</button>
 			</PopupWithForm>
 			<PopupWithForm
 				title="Новое место"
 				name="add"
+				nameBtn="Создать"
 				isOpen={isAddPlacePopupOpen}
 				onClose={closeAllPopups}
 			>
@@ -188,27 +160,12 @@ function App() {
 					required
 				/>
 				<span className="popup__input-error popupInputLink-error">Введите адрес сайта</span>
-				<button
-					className="popup__button-save popup__button-save_inactive"
-					id="submitAddCard"
-					type="submit"
-					disabled
-				>
-					Создать
-				</button>
 			</PopupWithForm>
-			<PopupWithForm title="Вы уверены?" name="delete">
-				<button
-					className="popup__button-save popup__button-save_delete"
-					id="submitDeleteCard"
-					type="submit"
-				>
-					Да!
-				</button>
-			</PopupWithForm>
+			<PopupWithForm title="Вы уверены?" name="delete" nameBtn="Да!"></PopupWithForm>
 			<PopupWithForm
 				title="Обновить аватар"
 				name="avatar"
+				nameBtn="Сохранить"
 				isOpen={isEditAvatarPopupOpen}
 				onClose={closeAllPopups}
 			>
@@ -223,9 +180,6 @@ function App() {
 				<span className="popup__input-error popupInputLinkAvatar-error">
 					Введите адрес сайта
 				</span>
-				<button className="popup__button-save" id="submitAvatar" type="submit">
-					Сохранить
-				</button>
 			</PopupWithForm>
 			<ImagePopup card={selectedCard} onClose={closeAllPopups} />
 		</div>
