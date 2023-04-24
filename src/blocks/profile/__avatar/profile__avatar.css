@@ -4,8 +4,10 @@
 	width: 120px;
 	height: 120px;
 	margin-right: 30px;
-	object-fit: cover;
 	transition: 0.2s;
+	background-size: no-repeat;
+	background-position: center;
+	background-size: cover;
 }
 
 .profile__avatar:hover {
