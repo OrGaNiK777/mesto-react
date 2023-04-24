@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import Header from "./Header";
-import Main from "./Main";
-import Footer from "./Footer";
-import PopupWithForm from "./PopupWithForm";
-import ImagePopup from "./ImagePopup";
+import Header from "./Header.js";
+import Main from "./Main.js";
+import Footer from "./Footer.js";
+import PopupWithForm from "./PopupWithForm.js";
+import ImagePopup from "./ImagePopup.js";
 import api from "./utils/Api.js";
-import Card from "./Card";
+import Card from "./Card.js";
 
 function App() {
 	//управление видимостью попапов
