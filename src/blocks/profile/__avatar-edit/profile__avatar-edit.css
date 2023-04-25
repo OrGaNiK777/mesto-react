@@ -16,3 +16,9 @@
 	background-position: center center;
 	content: "";
 }
+
+@media screen and (max-width: 767px) {
+	.profile__avatar-edit {
+		margin-left: 84px;
+	}
+}
