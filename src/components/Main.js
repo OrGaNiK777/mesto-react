@@ -3,11 +3,11 @@ function Main({
 	onEditProfile,
 	onAddPlace,
 	onEditAvatar,
-	userName,
-	userDescription,
-	userAvatar,
+	currentUser,
 	cards,
 	handleCardClick,
+	handleCardLike,
+	handleCardDelete,
 }) {
 	return (
 		<>
@@ -22,12 +22,13 @@ function Main({
 						>
 							<img
 								className="profile__avatar"
-								style={{ backgroundImage: `url(${userAvatar})` }}
+								style={{ backgroundImage: `url(${currentUser.avatar})` }}
+								alt=""
 							/>
 						</button>
 						<div className="profile__info">
-							<h1 className="profile__name">{userName}</h1>
-							<p className="profile__about">{userDescription}</p>
+							<h1 className="profile__name">{currentUser.name}</h1>
+							<p className="profile__about">{currentUser.about}</p>
 							<button
 								onClick={onEditProfile}
 								className="profile__edit-button"
@@ -46,13 +47,11 @@ function Main({
 			<section className="cards">
 				{cards.map((item) => (
 					<Card
+						currentUser={currentUser}
 						card={item}
-						key={item._id}
-						src={item.link}
-						title={item.name}
-						likes={item.likes}
-						owner={item.owner}
 						onCardClick={handleCardClick}
+						onCardLike={handleCardLike}
+						onCardDelete={handleCardDelete}
 					></Card>
 				))}
 			</section>
