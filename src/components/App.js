@@ -5,8 +5,11 @@ import Footer from "./Footer.js";
 import PopupWithForm from "./PopupWithForm.js";
 import ImagePopup from "./ImagePopup.js";
 import api from "./utils/Api.js";
-import { Route, Routes } from "react-router-dom";
 import CurrentUserContext from "./contexts/CurrentUserContext.js";
+import EditProfilePopup from "./EditProfilePopup.js";
+import EditAvatarPopup from "./EditAvatarPopup.js";
+import AddPlacePopup from "./AddPlacePopup.js";
+import Card from "./Card.js";
 
 function App() {
 	//управление видимостью попапов
@@ -58,6 +61,26 @@ function App() {
 	//выгрузка данных о пользователе с сервера
 	const [currentUser, setCurrentUser] = useState("");
 
+	//отправка данный о пользователе на сервер
+	function handleUpdateUser({ name, about }) {
+		api.patchUserInfo({ name, about })
+			.then((data) => {
+				setCurrentUser(data);
+				closeAllPopups();
+			})
+			.catch((err) => console.log(err));
+	}
+
+	// Отправка данных для изменения аватара
+	function handleUpdateAvatar(avatar) {
+		api.updateAvatar(avatar)
+			.then((data) => {
+				setCurrentUser(data);
+				closeAllPopups();
+			})
+			.catch((err) => console.log(err));
+	}
+
 	//выгрузка карт с сервера
 	const [cards, setCards] = useState([]);
 
@@ -71,6 +94,16 @@ function App() {
 				console.log(error.message);
 			});
 	}, []);
+
+	//отправка новой карты
+	function handleAddPlaceSubmit(item) {
+		api.postDataCards(item)
+			.then((newCard) => {
+				setCards([newCard, ...cards]);
+				closeAllPopups();
+			})
+			.catch((err) => console.log(err));
+	}
 
 	//увеличение картинки карты
 	const [selectedCard, setSelectedCard] = useState({});
@@ -109,126 +142,52 @@ function App() {
 		});
 	}
 
+	//
+
 	return (
 		<CurrentUserContext.Provider value={currentUser}>
 			<div className="page">
 				<Header />
-				<Routes>
-					<Route
-						index
-						path="/"
-						element={
-							<Main
-								onEditProfile={handleEditProfileClick}
-								onAddPlace={handleAddPlaceClick}
-								onEditAvatar={handleEditAvatarClick}
-								currentUser={currentUser}
-								cards={cards}
-								handleCardClick={handleCardClick}
-								handleCardLike={handleCardLike}
-								handleCardDelete={handleCardDelete}
-							/>
-						}
-					/>
-					<Route
-						path="*"
-						element={<h2 style={{ color: "#FF8C00" }}>404</h2>}
-					/>
-					<Route path="/phptos/:id" element="" />
-					<Route />
-				</Routes>
+
+				<Main
+					onEditProfile={handleEditProfileClick}
+					onAddPlace={handleAddPlaceClick}
+					onEditAvatar={handleEditAvatarClick}
+					currentUser={currentUser}
+				>
+					{cards.map((item) => (
+						<Card
+							currentUser={currentUser}
+							card={item}
+							onCardClick={handleCardClick}
+							onCardLike={handleCardLike}
+							onCardDelete={handleCardDelete}
+						></Card>
+					))}
+				</Main>
+
 				<ImagePopup card={selectedCard} onClose={closeAllPopups} />
 				<Footer />
-				<PopupWithForm
-					title="Редактировать профиль"
-					name="profile"
-					nameBtn="Сохранить"
+				<EditProfilePopup
 					isOpen={isEditProfilePopupOpen}
 					onClose={closeAllPopups}
-				>
-					<input
-						className="popup__input popup__input_addEdit"
-						id="popupProfileName"
-						name="name"
-						type="text"
-						placeholder="Имя"
-						required
-						maxLength="40"
-						minLength="2"
-					/>
-					<span className="popup__input-error popupProfileName-error">
-						Вы пропустили это поле
-					</span>
-					<input
-						className="popup__input popup__input_addEdit"
-						id="popupProfileAbout"
-						name="about"
-						type="text"
-						placeholder="Описание"
-						required
-						maxLength="200"
-						minLength="2"
-					/>
-					<span className="popup__input-error popupProfileAbout-error">
-						Вы пропустили это поле
-					</span>
-				</PopupWithForm>
-				<PopupWithForm
-					title="Новое место"
-					name="add"
-					nameBtn="Создать"
+					onUpdateUser={handleUpdateUser}
+				/>
+				<AddPlacePopup
 					isOpen={isAddPlacePopupOpen}
 					onClose={closeAllPopups}
-				>
-					<input
-						className="popup__input popup__input_addEdit"
-						id="popupInputTitle"
-						name="name"
-						type="text"
-						placeholder="Название"
-						required
-						maxLength="30"
-						minLength="2"
-					/>
-					<span className="popup__input-error popupInputTitle-error">
-						Вы пропустили это поле
-					</span>
-					<input
-						className="popup__input popup__input_addEdit"
-						id="popupInputLink"
-						name="link"
-						type="url"
-						placeholder="Ссылка на страницу"
-						required
-					/>
-					<span className="popup__input-error popupInputLink-error">
-						Введите адрес сайта
-					</span>
-				</PopupWithForm>
+					onAddPlaceSubmit={handleAddPlaceSubmit}
+				/>
 				<PopupWithForm
 					title="Вы уверены?"
 					name="delete"
 					nameBtn="Да!"
 				></PopupWithForm>
-				<PopupWithForm
-					title="Обновить аватар"
-					name="avatar"
-					nameBtn="Сохранить"
+				<EditAvatarPopup
 					isOpen={isEditAvatarPopupOpen}
 					onClose={closeAllPopups}
-				>
-					<input
-						className="popup__input popup__input_avatar"
-						id="popupInputLinkAvatar"
-						name="link"
-						type="url"
-						placeholder="Ссылка на страницу"
-						required
-					/>
-					<span className="popup__input-error popupInputLinkAvatar-error">
-						Введите адрес сайта
-					</span>
-				</PopupWithForm>
+					onUpdateAvatar={handleUpdateAvatar}
+				/>
 			</div>
 		</CurrentUserContext.Provider>
 	);
