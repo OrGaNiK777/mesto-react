@@ -2,11 +2,11 @@ import React from "react";
 import { useState } from "react";
 import Input from "./Input";
 import PopupWithForm from "./PopupWithForm";
-import CurrentUserContext from "./contexts/CurrentUserContext.js";
+import CurrentUserContext from "../contexts/CurrentUserContext.js";
 
-function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
-	const [name, setName] = useState();
-	const [about, setDescription] = useState();
+function EditProfilePopup({ isOpen, onClose, onUpdateUser, isLoading }) {
+	const [name, setName] = useState("");
+	const [about, setDescription] = useState("");
 
 	// Подписка на контекст
 	const currentUser = React.useContext(CurrentUserContext);
@@ -33,7 +33,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 		<PopupWithForm
 			title="Редактировать профиль"
 			name="profile"
-			nameBtn="Сохранить"
+			nameBtn={isLoading ? "Сохранение..." : "Сохранение"}
 			isOpen={isOpen}
 			onClose={onClose}
 			handleSubmit={handleSubmit}
@@ -44,7 +44,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 				placeholder="Имя"
 				maxLength="40"
 				minLength="2"
-				value={name}
+				value={name || ""}
 				handleChange={(e) => setName(e.target.value)}
 				classNameInput={"popup__input popup__input_addEdit"}
 				classNameValid={"popup__input-error popupProfileName-error"}
@@ -58,7 +58,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser }) {
 				placeholder="Описание"
 				maxLength="200"
 				minLength="2"
-				value={about}
+				value={about || ""}
 				handleChange={(e) => setDescription(e.target.value)}
 				classNameInput={"popup__input popup__input_addEdit"}
 				classNameValid={"popup__input-error popupProfileAbout-error"}

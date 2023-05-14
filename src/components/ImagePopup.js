@@ -1,7 +1,9 @@
 function ImagePopup({ card, onClose }) {
 	return (
 		<div>
-			<div className={`popup popup-img ${card.link ? "popup_opened" : ""}`}>
+			<div
+				className={`popup ${card.link ? "popup_opened popup-img" : ""}`}
+			>
 				<div className="popup-img__container">
 					<button
 						onClick={onClose}
@@ -9,7 +11,11 @@ function ImagePopup({ card, onClose }) {
 						className="popup__button-close"
 						type="button"
 					></button>
-					<img className="popup-img__img" src={card.link} alt={card.name} />
+					<img
+						className="popup-img__img"
+						src={card.link}
+						alt={card.name}
+					/>
 					<h2 className="popup-img__title">{card.name}</h2>
 				</div>
 			</div>
