@@ -29,33 +29,11 @@ function App() {
 		setIsEditAvatarPopupOpen(!isEditAvatarPopupOpen);
 	}
 
-	// //закрывает модальное окно при нажатии Esc
-	// useEffect(() => {
-	// 	function handleEscapeKey(event) {
-	// 		if (event.code === "Escape") {
-	// 			closeAllPopups();
-	// 		}
-	// 	}
-
-	// 	document.addEventListener("keydown", handleEscapeKey);
-	// 	return () => document.removeEventListener("keydown", handleEscapeKey);
-	// }, []);
-
-	//закрытие по клику на оверлэй используя contains
-	// document.addEventListener("mousedown", (evt) => {
-	// 	if (
-	// 		evt.target.classList.contains("popup") ||
-	// 		evt.target.classList.contains("popup__button-close")
-	// 	) {
-	// 		closeAllPopups();
-	// 	}
-	// });
-
 	function closeAllPopups() {
 		setIsEditProfilePopupOpen(false);
 		setIsAddPlacePopupOpen(false);
 		setIsEditAvatarPopupOpen(false);
-		setSelectedCard({});
+		setSelectedCard(false);
 	}
 
 	//выгрузка данных о пользователе с сервера
@@ -121,7 +99,7 @@ function App() {
 	const [selectedCard, setSelectedCard] = useState({});
 
 	function handleCardClick(selectedCard) {
-		setSelectedCard(selectedCard);
+		setTimeout(setSelectedCard(selectedCard), 5000);
 	}
 
 	//Добавьте поддержку лайков
@@ -203,6 +181,7 @@ function App() {
 					title="Вы уверены?"
 					name="delete"
 					nameBtn="Да!"
+					onClose={closeAllPopups}
 				></PopupWithForm>
 				<EditAvatarPopup
 					isOpen={isEditAvatarPopupOpen}
