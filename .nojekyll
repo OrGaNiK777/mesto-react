@@ -1,9 +1,0 @@
-pwd
-web\mesto-react
-
-git branch
-* main
-develop
-
-touch .nojekyll
-git add . && git commit -m "added nojekyll"
