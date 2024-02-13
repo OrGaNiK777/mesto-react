@@ -1,6 +1,7 @@
 {
   "name": "mestro-react",
   "version": "0.1.0",
+  "homepage": "https://OrGaNiK777.github.io/mesto-react",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
